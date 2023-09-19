@@ -1,0 +1,76 @@
+% !TEX root = Simple-CV.tex
+%-------------------------------------------------------------------------------------------------------
+% Packages
+%-------------------------------------------------------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english,spanish]{babel} % Agregamos el idioma español
+\usepackage{fontawesome}
+\usepackage{datetime}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage[colorlinks=true, urlcolor=ColorTwo]{hyperref}
+\usepackage{tikz}
+\usepackage{hyperref}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{sectsty}
+\usepackage{multicol}
+\usepackage{adjustbox}
+\usepackage{xcolor}
+\newcommand{\MiUltimaActualizacion}[1]{%
+  \noindent \textcolor{ColorOne}{Última actualización:} #1\par
+}
+%-------------------------------------------------------------------------------------------------------
+% Layout
+%-------------------------------------------------------------------------------------------------------
+\pagenumbering{gobble}
+\renewcommand{\baselinestretch}{1.5} 
+\setlength{\parindent}{0pt}
+
+%
+% Color theme
+%
+\definecolor{ColorOne}{RGB}{0,110,140} 	% Blue
+\definecolor{ColorTwo}{RGB}{0,51,102} 	% Mauve
+%\definecolor{ColorTwo}{RGB}{140,100,0} 	% Gold
+
+\sectionfont{\color{ColorOne}} 
+\subsectionfont{\color{ColorOne}} 
+
+%
+% Vertical line
+%
+\newcommand{\MyVerticalRule}{%
+	\textcolor{ColorOne}{\rule{1pt}{\textheight}}
+}
+
+%
+% Update
+%
+\newcommand{\LastUpdate}{%
+\vfill
+\centering \small
+\textcolor{ColorOne}{Last updated: \monthname,~\the\year.}
+}
+
+%
+% Skip
+%
+\newcommand{\MySkip}{
+\vskip12pt
+}
+
+%
+% Format hyperrefs
+%
+\newcommand{\myhref}[2]{%
+\href{#1}{\textcolor{ColorTwo}{#2}}
+}
+%
+% Format skill bullets
+%
+\newcommand{\SkillBull}[1]{%
+\textcolor{ColorTwo}{#1}
+}
+
