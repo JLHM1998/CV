@@ -1,0 +1,650 @@
+\documentclass[10pt, letterpaper]{article}
+
+% Packages:
+\usepackage[
+    ignoreheadfoot, % set margins without considering header and footer
+    top=2 cm, % seperation between body and page edge from the top
+    bottom=2 cm, % seperation between body and page edge from the bottom
+    left=1.5 cm, % seperation between body and page edge from the left
+    right=1.5 cm, % seperation between body and page edge from the right
+    footskip=1.0 cm, % seperation between body and footer
+    % showframe % for debugging 
+]{geometry} % for adjusting page geometry
+\usepackage{titlesec} % for customizing section titles
+\usepackage{tabularx} % for making tables with fixed width columns
+\usepackage{array} % tabularx requires this
+\usepackage[dvipsnames]{xcolor} % for coloring text
+\definecolor{accentTitle}{HTML}{0e6e55}
+\definecolor{accentText}{HTML}{0e6e55}
+\definecolor{accentLine}{HTML}{a16f0b}
+\definecolor{primaryColor}{RGB}{0, 79, 144} % define primary color
+\usepackage{enumitem} % for customizing lists
+\usepackage{fontawesome5} % for using icons
+\usepackage{amsmath} % for math
+\usepackage[
+    pdftitle={Jose's CV},
+    pdfauthor={José Luis Huanuqueño Murillo},
+    pdfcreator={LaTeX with RenderCV},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref} % for links, metadata and bookmarks
+\usepackage[pscoord]{eso-pic} % for floating text on the page
+\usepackage{calc} % for calculating lengths
+\usepackage{bookmark} % for bookmarks
+\usepackage{lastpage} % for getting the total number of pages
+\usepackage{changepage} % for one column entries (adjustwidth environment)
+\usepackage{paracol} % for two and three column entries
+\usepackage{ifthen} % for conditional statements
+\usepackage{needspace} % for avoiding page brake right after the section title
+\usepackage{iftex} % check if engine is pdflatex, xetex or luatex
+\usepackage{academicons}
+% Ensure that generate pdf is machine readable/ATS parsable:
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    % \usepackage[T1]{fontenc} % this breaks sb2nov
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+\fi
+
+% Some settings:
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt} % remove space before adjustwidth environment
+\pagestyle{empty} % no header or footer
+\setcounter{secnumdepth}{0} % no section numbering
+\setlength{\parindent}{0pt} % no indentation
+\setlength{\topskip}{0pt} % no top skip
+\setlength{\columnsep}{0cm} % set column seperation
+\makeatletter
+\let\ps@customFooterStyle\ps@plain % Copy the plain style to customFooterStyle
+\patchcmd{\ps@customFooterStyle}{\thepage}{
+    \color{gray}\textit{\small José Luis Huanuqueño Murillo - Page \thepage{} of \pageref*{LastPage}}
+}{}{} % replace number by desired string
+\makeatother
+\pagestyle{customFooterStyle}
+
+% \titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
+
+
+\titleformat{\section}
+  {\needspace{4\baselineskip}\bfseries\large\color{accentTitle}}% Estilo del texto (incluye el color)
+  {}% Etiqueta (vacía en este caso)
+  {0pt}% Separación entre la etiqueta y el título
+  {}% Código antes del título (vacío)
+  [\vspace{1pt}\color{accentLine}\titlerule]% Código posterior: se añade la línea en color
+
+\titlespacing{\section}{
+    % left space:
+    -1pt
+}{
+    % top space:
+    0.3 cm
+}{
+    % bottom space:
+    0.2 cm
+} % section title spacing
+
+\renewcommand\labelitemi{$\circ$} % custom bullet points
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=0.4 cm + 10pt
+    ]
+}{
+    \end{itemize}
+} % new environment for highlights
+
+\newenvironment{highlightsforbulletentries}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=10pt
+    ]
+}{
+    \end{itemize}
+} % new environment for highlights for bullet entries
+
+
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{
+        0.2 cm + 0.00001 cm
+    }{
+        0.2 cm + 0.00001 cm
+    }
+}{
+    \end{adjustwidth}
+} % new environment for one column entries
+
+\newenvironment{twocolentry}[2][]{
+    \onecolentry
+    \def\secondColumn{#2}
+    \setcolumnwidth{\fill, 4.5 cm}
+    \begin{paracol}{2}
+}{
+    \switchcolumn \raggedleft \secondColumn
+    \end{paracol}
+    \endonecolentry
+} % new environment for two column entries
+
+% \newenvironment{header}{
+%     \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.5}
+% }{
+%     \par\kern\topsep
+% } % new environment for the header
+
+\newenvironment{header}{
+    \color{accentTitle}%
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.5}
+}{
+    \par\kern\topsep
+}
+
+\newcommand{\placelastupdatedtext}{% \placetextbox{<horizontal pos>}{<vertical pos>}{<stuff>}
+  \AddToShipoutPictureFG*{% Add <stuff> to current page foreground
+    \put(
+        \LenToUnit{\paperwidth-2 cm-0.2 cm+0.05cm},
+        \LenToUnit{\paperheight-1.0 cm}
+    ){\vtop{{\null}\makebox[0pt][c]{
+        \small\color{gray}\textit{Última actualización en febrero de 2025}\hspace{\widthof{Última actualización en septiembre de 2025}}
+    }}}%
+  }%
+}%
+
+% save the original href command in a new command:
+\let\hrefWithoutArrow\href
+
+% new command for external links:
+\renewcommand{\href}[2]{\hrefWithoutArrow{#1}{\ifthenelse{\equal{#2}{}}{ }{#2 }\raisebox{.15ex}{\footnotesize \faExternalLink*}}}
+
+
+
+
+\begin{document}
+    \newcommand{\AND}{\unskip
+        \cleaders\copy\ANDbox\hskip\wd\ANDbox
+        \ignorespaces
+    }
+    \newsavebox\ANDbox
+    \sbox\ANDbox{}
+
+    \placelastupdatedtext
+    \begin{header}
+        \textbf{\fontsize{24 pt}{24 pt}\selectfont José Luis Huanuqueño Murillo}
+
+        \vspace{0.3 cm}
+
+        \normalsize
+        \mbox{{\color{black}\footnotesize\faMapMarker*}\hspace*{0.13cm}\textcolor{black}{La Molina-Lima, PE}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{mailto:joluhumu98@gmail.com}{\color{black}{\footnotesize\faEnvelope[regular]}\hspace*{0.13cm}joluhumu98@gmail.com}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{tel:+51-999201164}{\color{black}{\footnotesize\faPhone*}\hspace*{0.13cm}+51 999201164}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        % \mbox{\hrefWithoutArrow{https://yourwebsite.com/}{\color{black}{\footnotesize\faLink}\hspace*{0.13cm}yourwebsite.com}}%
+        % \kern 0.25 cm%
+        % \AND%
+        % \kern 0.25 cm%
+        % \mbox{\hrefWithoutArrow{https://orcid.org/0009-0003-8511-4524}{\color{black}{\footnotesize\aiOrcid}\hspace*{0.13cm}ORCID}}%
+        % \kern 0.25 cm%
+        % \AND%
+        % \kern 0.25 cm%
+        % \mbox{\hrefWithoutArrow{https://scholar.google.com/citations?authuser=1&user=Osc0ip8AAAAJ}{\color{black}{\footnotesize\aiGoogleScholar}\hspace*{0.13cm}Google Scholar}}%
+        % \kern 0.25 cm%
+        % \AND%
+        % \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{https://www.linkedin.com/in/jlhm98/}{\color{black}{\footnotesize\faLinkedinIn}\hspace*{0.13cm}jlhm1998}}%
+        % \kern 0.25 cm%
+        % \AND%
+        % \kern 0.25 cm%
+        % \mbox{\hrefWithoutArrow{https://github.com/JLHM1998}{\color{black}{\footnotesize\faGithub}\hspace*{0.13cm}jlhm1998}}%
+    \end{header}
+    
+    \vspace{0.3 cm - 0.3 cm}
+
+
+    \section{Perfil}
+
+
+
+        
+        \begin{onecolentry}
+            Ingeniero Agrícola con experiencia en teledetección aplicada a la agricultura de precisión y recursos hídricos. Domino lenguajes de programación y participo en proyectos de investigación con sistemas de información geográfica (SIG). Enfocado en el uso de imágenes satelitales para optimizar el rendimiento agrícola y reducir el impacto ambiental.
+        \end{onecolentry}
+
+        % \vspace{0.2 cm}
+
+        % \begin{onecolentry}
+        %     The boilerplate content was inspired by \href{https://github.com/dnl-blkv/mcdowell-cv}{Gayle McDowell}.
+        % \end{onecolentry}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    \section{Información Personal}
+
+
+        \begin{onecolentry}
+            \textbf{Ciudadanía:} Peruana
+        \end{onecolentry}
+
+        \vspace{0.2 cm}
+
+        \begin{onecolentry}
+            \textbf{Lenguajes:} Inglés (B2), Español (nativo)
+        \end{onecolentry}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    \section{Educación}
+
+        \begin{twocolentry}{
+        \textbf{Lima, PE}    
+            
+        \textit{Ago 2024 – Presente}}
+            \textbf{Universidad Nacional Agraria La Molina}
+
+            \textit{Maestría en Recursos Hídricos}
+        \end{twocolentry}
+
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+            \begin{highlights}
+                \item Especialización en Cuencas Hidrográficas y Sistemas de Información Geográfica.
+            \end{highlights}
+        \end{onecolentry}
+        
+        \vspace{0.2 cm}
+            
+        \begin{twocolentry}{
+        \textbf{Lima, PE} 
+            
+        \textit{Mar 2017 – Dic 2022}}
+            \textbf{Universidad Nacional Agraria La Molina}
+
+            \textit{Ingeniería Agrícola - Recursos Hídricos}
+        \end{twocolentry}
+
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+            \begin{highlights}
+                \item Teledetección y Cambio Climático sobre los Cultivos y Recursos Hídricos. 
+                % Estrés Hídrico mediante termografía en arrozales, variedad CAPOTEÑA, INIA, bajo riego con alternancia de humedecimiento y secado en Vista Florida.
+            \end{highlights}
+        \end{onecolentry}
+
+        \vspace{0.2 cm}
+
+        \begin{twocolentry}{
+        \textbf{Valencia, ES}    
+            
+        \textit{Ago 2021 – Dic 2021}}
+            \textbf{Universidad Miguel Hernández de Elche}
+
+            \textit{Excelencia Académica y Movilidad Internacional}
+        \end{twocolentry}
+
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+            \begin{highlights}
+                \item Tecnologías digitales e innovación para el Sector Agroalimentario.
+            \end{highlights}
+        \end{onecolentry}
+        
+        % \vspace{0.10 cm}
+        % \begin{onecolentry}
+        %     \begin{highlights}
+        %     \item Tecnologías digitales e innovación para el Sector Agroalimentario.
+        %     \item Innovación en el sector agroalimentario.
+        %     \item Inteligencia artificial con Python.
+        %     \item Habilidades directivas.
+        %     \item Inocuidad y seguridad alimentaria.
+        %     \item Economía circular - Valoración agraria y Ambiental.
+        %     \item Planificación sostenible del medio y servicios ecosistémicos.
+        %     \item Eficiencia energética en instalaciones.
+        %     \item Análisis de inversiones.
+        %     \item Marketing digital en el ámbito agroalimentario.
+        %     \item Energía solar térmica y fotovoltaica.
+        %     \item Emprendimiento en el sector agroalimentario.
+        % \end{highlights}
+
+        % \end{onecolentry}
+        
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    \section{Experiencia}
+
+
+        \begin{twocolentry}{
+        \textbf{Lima, PE}    
+            
+        \textit{Set 2024 – Dic 2024}}
+            \textbf{Proyecto Ecosmart Rice}
+
+            \textit{Asistencia en temas de investigación}
+        \end{twocolentry}
+
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+            \begin{highlights}
+                \item Tesista de maestría, en el proyecto de investigación.
+            \end{highlights}
+        \end{onecolentry}
+
+        \vspace{0.2 cm}
+
+        \begin{twocolentry}{
+        \textbf{Lambayeque, PE}    
+            
+        \textit{Jul 2024 – Set 2024}}
+            \textbf{Proyecto PROCIENCIA}
+
+            \textit{Asistencia técnica, capacitación y monitoreo}
+        \end{twocolentry}
+
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+            \begin{highlights}
+                \item Parametrización y validación de modelo de productividad del agua para establecer rangos adecuados de consumo de agua y emisión de GEI para producir arroz.
+            \end{highlights}
+        \end{onecolentry}
+
+
+        \vspace{0.2 cm}
+
+        \begin{twocolentry}{
+        \textbf{Lambayeque, PE}    
+            
+        \textit{Ene 2023 – Jun 2024}}
+            \textbf{Proyecto PROCIENCIA}
+            
+            \textit{Tesista}
+        \end{twocolentry}
+
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+            \begin{highlights}
+                \item Teledetección aplicada a la agricultura de precisión.
+            \end{highlights}
+        \end{onecolentry}
+
+        \vspace{0.2 cm}
+
+        \begin{twocolentry}{
+        \textbf{Lima, PE}    
+            
+        \textit{Oct 2023 – Abr 2024}}
+            \textbf{Hidra - Perú}
+            
+            \textit{Asistente de Consultoría}
+        \end{twocolentry}
+
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+            \begin{highlights}
+                \item Proyectos de ingeniería y gestión de permisos ambientales.
+            \end{highlights}
+        \end{onecolentry}
+
+        \vspace{0.2 cm}
+
+        \begin{twocolentry}{
+        \textbf{Lambayeque, PE}    
+            
+        \textit{Ene 2021 – Ago 2021}}
+            \textbf{Proyecto Rice Monitoring}
+            
+            \textit{Prácticas Preprofesionales}
+        \end{twocolentry}
+
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+            \begin{highlights}
+                \item Procesamiento de imágenes satelitales para la obtención de índices hídricos en cultivo de arroz.
+            \end{highlights}
+        \end{onecolentry}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    \section{Publicaciones}
+
+        
+        \begin{samepage}
+            \begin{twocolentry}{
+                \textit{Feb 2025}
+            }
+                \textbf{Rice Yield Prediction Using Spectral and Textural Indices Derived from UAV Imagery and Machine Learning Models in Lambayeque, Peru.}
+
+                \vspace{0.10 cm}
+                
+                \mbox{Quille-Mamani, J.}; \mbox{Ramos-Fernández, L.}; \mbox{\underline{\textbf{\textit{Huanuqueño-Murillo, J.}}}}; \mbox{Quispe-Tito, D.}; \mbox{Cruz-Villacorta, L.}; \mbox{Pino-Vargas, E.}; \mbox{Flores del Pino, L.}; \mbox{Heros-Aguilar, E.}; \mbox{Angel Ruiz, L.}
+                
+            \end{twocolentry}
+
+            \vspace{0.10 cm}
+
+            \begin{onecolentry}
+            \href{https://doi.org/10.3390/rs17040632}{10.3390/rs17040632}
+            \end{onecolentry}
+        \end{samepage}
+
+        \vspace{0.2 cm}
+        
+        \begin{samepage}
+            \begin{twocolentry}{
+                \textit{Oct 2024}
+            }
+                \textbf{Water Use Efficiency in Rice Under Alternative Wetting and Drying Technique Using Energy Balance Model with UAV Information and AquaCrop in Lambayeque, Peru.}
+
+                \vspace{0.10 cm}
+
+                \mbox{Ramos-Fernández, L.}; \mbox{Peña-Amaro, R.}; \mbox{\underline{\textbf{\textit{Huanuqueño-Murillo, J.}}}}; \mbox{Quispe-Tito, D.}; \mbox{Maldonado-Huarhuachi, M.}; \mbox{Heros-Aguilar, E.}; \mbox{Flores del Pino, L.}; \mbox{Pino-Vargas, E.}; \mbox{Quille-Mamani, J.}; \mbox{Torres-Rua, A.}
+                
+            \end{twocolentry}
+
+            \vspace{0.10 cm}
+
+            \begin{onecolentry}
+            \href{https://doi.org/10.3390/rs16203882}{10.3390/rs16203882}
+            \end{onecolentry}
+        \end{samepage}
+        
+                \vspace{0.2 cm}
+        
+        \begin{samepage}
+            \begin{twocolentry}{
+                \textit{Feb 2024}
+            }
+                \textbf{Water Stress Index and Stomatal Conductance under Different Irrigation Regimes with Thermal Sensors in Rice Fields on the Northern Coast of Peru.}
+
+                \vspace{0.10 cm}
+
+                \mbox{Ramos-Fernández, L.}; \mbox{Gonzales-Quiquia, M.}; \mbox{\underline{\textbf{\textit{Huanuqueño-Murillo, J.}}}}; \mbox{Quispe-Tito, D.}; \mbox{Heros-Aguilar, E.}; \mbox{Flores del Pino, L.}; \mbox{Torres-Rua, A.}
+
+            \end{twocolentry}
+
+
+            \vspace{0.10 cm}
+
+            \begin{onecolentry}
+            \href{https://doi.org/10.3390/rs16050796}{10.3390/rs16050796}
+            \end{onecolentry}
+        \end{samepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    \section{Proyectos}
+
+
+
+        
+        \begin{twocolentry}{
+                \textit{Ago 2024 - Presemte}
+            }
+            \textbf{Ecosmart Rice}
+        \end{twocolentry}
+
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+            \begin{highlights}
+                \item Nuevas herramientas tecnológicas de precisión con sensores remotos para un sistema de producción sostenible en arroz, con menor consumo de agua, menor emisión de gases y mayor rendimiento, en beneficio de los agricultores de Lambayeque.
+                \item Contrato PE501086540-2024-PROCIENCIA.
+            \end{highlights}
+        \end{onecolentry}
+
+        \vspace{0.2 cm}
+
+        \begin{twocolentry}{
+                \textit{Jun 2023 - Jun 2024}
+            }
+            \textbf{Prociencia}
+        \end{twocolentry}
+
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+            \begin{highlights}
+                \item Implementación de herramientas tecnológicas en el desarrollo de un sistema de precisión con sensores remotos para optimizar el uso del agua y reducir la emisión de gases de efecto invernadero en arrozales en beneficio de los agricultores de la región Lambayeque.
+                \item Contrato PE501078113-2022-PROCIENCIA.
+            \end{highlights}
+        \end{onecolentry}
+
+
+        \vspace{0.2 cm}
+
+        \begin{twocolentry}{
+            
+            
+        \textit{Dic 2022 - May 2023}}
+            \textbf{Rice Monitoring}
+        \end{twocolentry}
+
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+            \begin{highlights}
+                \item Mejora de la gestión del agua en arrozales de productores rurales peruanos empleando drones y satélites en el marco del cambio climático.
+            \end{highlights}
+        \end{onecolentry}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+\section{Certificados}
+
+\begin{twocolentry}{
+    \textit{Jan 2025}
+}
+\textbf{Agricultura de Precisión}
+\end{twocolentry}
+
+\vspace{0.10 cm}
+\begin{onecolentry}
+  \begin{highlights}
+    \item Estimación de ET con drones mediante metodología TSEB.
+  \end{highlights}
+\end{onecolentry}
+
+\vspace{0.2 cm}
+
+\begin{twocolentry}{
+    \textit{Oct 2024}
+}
+\textbf{Congreso Latinoamericano de Hidráulica}
+\end{twocolentry}
+
+\vspace{0.10 cm}
+\begin{onecolentry}
+  \begin{highlights}
+    \item Modelación hidrológica y análisis de datos ambientales.
+  \end{highlights}
+\end{onecolentry}
+
+\vspace{0.2 cm}
+
+\begin{twocolentry}{
+    \textit{Mar 2024}
+}
+\textbf{Análisis Espacial y Ciencia de Datos}
+\end{twocolentry}
+
+\vspace{0.10 cm}
+\begin{onecolentry}
+  \begin{highlights}
+    \item GIS, análisis espacial y programación en R y Python.
+  \end{highlights}
+\end{onecolentry}
+
+\vspace{0.2 cm}
+
+\begin{twocolentry}{
+    \textit{Feb 2024}
+}
+\textbf{Análisis Hidrológico y Modelación de Cuencas}
+\end{twocolentry}
+
+\vspace{0.2 cm}
+
+\begin{twocolentry}{
+    \textit{Feb 2024}
+}
+\textbf{Especialización en Excel y Power BI}
+\end{twocolentry}
+
+\vspace{0.10 cm}
+\begin{onecolentry}
+  \begin{highlights}
+    \item Análisis de datos y dashboards interactivos.
+  \end{highlights}
+\end{onecolentry}
+
+\vspace{0.2 cm}
+
+\begin{twocolentry}{
+    \textit{Nov 2021}
+}
+\textbf{Operación y Manejo de Drones}
+\end{twocolentry}
+
+\vspace{0.2 cm}
+
+\begin{twocolentry}{
+    \textit{May 2021}
+}
+\textbf{Análisis de Datos con R}
+\end{twocolentry}
+
+\vspace{0.2 cm}
+
+\begin{twocolentry}{
+    \textit{Nov 2020}
+}
+\textbf{Software para Ingeniería y Teledetección}
+\end{twocolentry}
+
+\vspace{0.2 cm}
+
+\begin{twocolentry}{
+    \textit{Jun 2020}
+}
+\textbf{Expedientes Técnicos y Obras Sanitarias}
+\end{twocolentry}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Habilidades}
+
+\begin{highlights}
+    \item \textbf{Herramientas SIG y Programación:} ArcGIS, QGIS, Pix4D, Python, R, Matlab.
+    \item \textbf{Software de Ingeniería:} AutoCAD, Civil 3D, Office.
+    \item \textbf{Habilidades interpersonales:} Trabajo en equipo.
+\end{highlights}
+
+
+\end{document}
